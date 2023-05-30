@@ -10,7 +10,7 @@ public class User : IdentityUser
 
     public bool IsActive { get; set; }
 
-    public List<int>? Books { get; set; }
+    public ICollection<Book>? Books { get; set; }
 
     public Book? Book { get; set; }
 }
