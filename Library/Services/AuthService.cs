@@ -42,9 +42,35 @@ public class AuthService : IAuthService
         }
     }
 
-    public Task<string> RegisterAsync(RegisterModel model)
+    public async Task<string> RegisterAsync(RegisterModel model)
     {
-        throw new NotImplementedException();
+        var existingUser = await _userManager.FindByNameAsync(model.UserName);
+
+        if (existingUser != null)
+        {
+            throw new Exception("User already exists");
+        }
+
+        var user = new User
+        {
+            UserName = model.UserName,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            IsActive = true,
+            SecurityStamp = Guid.NewGuid().ToString(),
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+
+        await _userManager.AddToRoleAsync(user, Roles.Reader);
+
+        if (!result.Succeeded)
+        {
+            throw new Exception("Error");
+        }
+
+        return "User created successfully!";
+
     }
     
     private async Task<LoginResponse> GetToken(User user)
