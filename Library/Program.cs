@@ -3,6 +3,7 @@ using System.Text;
 using Library.Data;
 using Library.Data.Entities;
 using Library.Data.Initializers;
+using Library.Middleware;
 using Library.Services;
 using Library.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -111,6 +112,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
+app.UseException();
 
 app.Run();
