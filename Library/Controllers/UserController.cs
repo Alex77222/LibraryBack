@@ -15,12 +15,25 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    [Route("list")]
+    [Route("addRole")]
     public async Task<IActionResult> AddRolesAsync(string userName, List<string> roles)
     {
         var result = await _userService.AddRolesAsync(userName, roles);
 
         return Ok(result);
     }
-    
+
+    [HttpGet]
+    [Route("list")]
+    public async Task<IActionResult> GetUsersAsync(string? searchString,
+        bool showInactiveUsers,
+        int? currentPage = 1,
+        int? pageSize = 20)
+    {
+        var result = await _userService.GetUsersAsync(searchString,
+            showInactiveUsers,
+            currentPage!.Value,
+            pageSize!.Value);
+        return Ok(result);
+    }
 }

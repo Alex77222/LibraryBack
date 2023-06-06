@@ -1,22 +1,31 @@
-﻿using Library.Data.Entities;
+﻿using AutoMapper;
+using Library.Data.Entities;
 using Library.Models;
 using Library.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
 
 public class UserService : IUserService
 {
     private readonly UserManager<User> _userManager;
+    private readonly IMapper _mapper;
 
-    public UserService(UserManager<User> userManager)
+    public UserService(UserManager<User> userManager, IMapper mapper)
     {
         _userManager = userManager;
+        _mapper = mapper;
     }
 
-    public Task<List<UserDto>> GetUsersAsync()
+    public async Task<IList<UserDto>> GetUsersAsync(
+        string? searchString,
+        bool showInactiveUsers,
+        int currentPage,
+        int pageSize)
     {
-        throw new NotImplementedException();
+        var users = await SearchUsersAsync(searchString, showInactiveUsers);
+        return await GetUserDtosAsync(users.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList());
     }
 
     public async Task<string> AddRolesAsync(string userName, List<string> roles)
@@ -38,5 +47,47 @@ public class UserService : IUserService
     public Task<UserDto> GetUserAsync(string userName)
     {
         throw new NotImplementedException();
+    }
+    
+    private async Task<IList<User>> SearchUsersAsync(string? searchString, bool showInactiveUsers)
+    {
+        var users = new List<User>();
+        var search = !string.IsNullOrEmpty(searchString) ? searchString.Replace(" ", "") : string.Empty;
+        var usersByFullName =
+            await _userManager.Users
+                .Where(x =>
+                    (x.IsActive || showInactiveUsers) &&
+                    ((x.FirstName + x.LastName).Contains(search) ||
+                     (x.LastName + x.FirstName).Contains(search)))
+                .ToListAsync();
+
+        users.AddRange(usersByFullName);
+
+        var usersByUserName = await _userManager.Users
+            .Where(x =>
+                (x.IsActive || showInactiveUsers) &&
+                x.UserName.Contains(search))
+            .ToListAsync();
+
+        users.AddRange(usersByUserName.Except(usersByFullName));
+
+        return users;
+    }
+    
+    private async Task<UserDto> GetUserDtoAsync(User user)
+    {
+        var userDto = _mapper.Map<UserDto>(user);
+        userDto.Roles = await _userManager.GetRolesAsync(user);
+        return userDto;
+    }
+    private async Task<IList<UserDto>> GetUserDtosAsync(List<User> users)
+    {
+        var result = new List<UserDto>();
+        foreach (var user in users)
+        {
+            result.Add(await GetUserDtoAsync(user));
+        }
+
+        return result;
     }
 }
