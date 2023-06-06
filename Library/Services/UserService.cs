@@ -8,6 +8,12 @@ namespace Library.Services;
 public class UserService : IUserService
 {
     private readonly UserManager<User> _userManager;
+
+    public UserService(UserManager<User> userManager)
+    {
+        _userManager = userManager;
+    }
+
     public Task<List<UserDto>> GetUsersAsync()
     {
         throw new NotImplementedException();

@@ -62,8 +62,6 @@ public class AuthService : IAuthService
 
         var result = await _userManager.CreateAsync(user, model.Password);
 
-        await _userManager.AddToRoleAsync(user, Roles.Reader);
-
         if (!result.Succeeded)
         {
             throw new Exception("Error");
