@@ -44,9 +44,10 @@ public class UserService : IUserService
         throw new Exception("User is not found");
     }
 
-    public Task<UserDto> GetUserAsync(string userName)
+    public async Task<UserDto> GetUserAsync(string userName)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByNameAsync(userName);
+        return _mapper.Map<UserDto>(user);
     }
     
     private async Task<IList<User>> SearchUsersAsync(string? searchString, bool showInactiveUsers)

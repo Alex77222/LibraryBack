@@ -36,4 +36,12 @@ public class UserController : ControllerBase
             pageSize!.Value);
         return Ok(result);
     }
+
+    [HttpGet]
+    [Route("user")]
+    public async Task<IActionResult> GetUserAsyunc(string userName)
+    {
+        var result = await _userService.GetUserAsync(userName);
+        return Ok(result);
+    }
 }
