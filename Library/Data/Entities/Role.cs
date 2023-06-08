@@ -1,6 +1,6 @@
 ﻿namespace Library.Data.Entities;
 
-public class Roles
+public class Role
 {
     public static string Admin => "admin";
 

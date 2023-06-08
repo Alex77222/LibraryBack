@@ -7,19 +7,19 @@ public static class RolesInitializer
 {
     public static async Task InitializeAsync(RoleManager<IdentityRole> roleManager)
     {
-        if (await roleManager.FindByNameAsync(Roles.Admin) == null)
+        if (await roleManager.FindByNameAsync(Role.Admin) == null)
         {
-            await roleManager.CreateAsync(new IdentityRole(Roles.Admin));
+            await roleManager.CreateAsync(new IdentityRole(Role.Admin));
         }
 
-        if (await roleManager.FindByNameAsync(Roles.Moderator) == null)
+        if (await roleManager.FindByNameAsync(Role.Moderator) == null)
         {
-            await roleManager.CreateAsync(new IdentityRole(Roles.Moderator));
+            await roleManager.CreateAsync(new IdentityRole(Role.Moderator));
         }
 
-        if (await roleManager.FindByNameAsync(Roles.Reader) == null)
+        if (await roleManager.FindByNameAsync(Role.Reader) == null)
         {
-            await roleManager.CreateAsync(new IdentityRole(Roles.Reader));
+            await roleManager.CreateAsync(new IdentityRole(Role.Reader));
         }
     }
 }
