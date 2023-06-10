@@ -38,6 +38,7 @@ public class UserService : IUserService
             var removedRoles = userRoles.Except(roles);
             await _userManager.AddToRolesAsync(user, addedRoles);
             await _userManager.RemoveFromRolesAsync(user, removedRoles);
+            await _userManager.UpdateAsync(user);
             return "Update roles successfully!";
         }
         
@@ -47,7 +48,8 @@ public class UserService : IUserService
     public async Task<UserDto> GetUserAsync(string userName)
     {
         var user = await _userManager.FindByNameAsync(userName);
-        return _mapper.Map<UserDto>(user);
+        var result = await GetUserDtoAsync(user);
+        return _mapper.Map<UserDto>(result);
     }
     
     private async Task<IList<User>> SearchUsersAsync(string? searchString, bool showInactiveUsers)
