@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.Data.Entities;
+using Library.Exceptions;
 using Library.Models;
 using Library.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -31,18 +32,15 @@ public class UserService : IUserService
     public async Task<string> AddRolesAsync(string userName, List<string> roles)
     {
         var user = await _userManager.FindByNameAsync(userName);
-        if (user!=null)
-        {
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var addedRoles =  roles.Except(userRoles);
-            var removedRoles = userRoles.Except(roles);
-            await _userManager.AddToRolesAsync(user, addedRoles);
-            await _userManager.RemoveFromRolesAsync(user, removedRoles);
-            await _userManager.UpdateAsync(user);
-            return "Update roles successfully!";
-        }
-        
-        throw new Exception("User is not found");
+        if (user == null) throw new UserException("User is not found");
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var addedRoles =  roles.Except(userRoles);
+        var removedRoles = userRoles.Except(roles);
+        await _userManager.AddToRolesAsync(user, addedRoles);
+        await _userManager.RemoveFromRolesAsync(user, removedRoles);
+        await _userManager.UpdateAsync(user);
+        return "Update roles successfully!";
+
     }
 
     public async Task<UserDto> GetUserAsync(string userName)
