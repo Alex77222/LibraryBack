@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Library.Data.Entities;
+using Library.Exceptions;
 using Library.Models;
 using Library.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -33,12 +34,12 @@ public class AuthService : IAuthService
             }
             else
             {
-                throw new Exception("User is not Active");
+                throw new AuthException("User is not Active");
             }
         }
         else
         {
-            throw new Exception("Wrong UserName or password");
+            throw new AuthException("Wrong UserName or password");
         }
     }
 
@@ -48,7 +49,7 @@ public class AuthService : IAuthService
 
         if (existingUser != null)
         {
-            throw new Exception("User already exists");
+            throw new AuthException("User already exists");
         }
 
         var user = new User
@@ -64,7 +65,7 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
         {
-            throw new Exception("Error");
+            throw new AuthException("Error");
         }
 
         return "User created successfully!";

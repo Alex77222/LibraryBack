@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.Data.Entities;
+using Library.Exceptions;
 using Library.Models;
 using Library.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -25,33 +26,43 @@ public class UserService : IUserService
         int pageSize)
     {
         var users = await SearchUsersAsync(searchString, showInactiveUsers);
+        if (users.Any() == false)
+        {
+            throw new UserException("Users is not found or User not found");
+        }
+
         return await GetUserDtosAsync(users.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList());
     }
 
     public async Task<string> AddRolesAsync(string userName, List<string> roles)
     {
         var user = await _userManager.FindByNameAsync(userName);
-        if (user!=null)
-        {
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var addedRoles =  roles.Except(userRoles);
-            var removedRoles = userRoles.Except(roles);
-            await _userManager.AddToRolesAsync(user, addedRoles);
-            await _userManager.RemoveFromRolesAsync(user, removedRoles);
-            await _userManager.UpdateAsync(user);
-            return "Update roles successfully!";
-        }
         
-        throw new Exception("User is not found");
+        if (user == null) throw new UserException("User is not found");
+        
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var addedRoles = roles.Except(userRoles);
+        var removedRoles = userRoles.Except(roles);
+        
+        await _userManager.AddToRolesAsync(user, addedRoles);
+        await _userManager.RemoveFromRolesAsync(user, removedRoles);
+        await _userManager.UpdateAsync(user);
+        
+        return "Update roles successfully!";
     }
 
     public async Task<UserDto> GetUserAsync(string userName)
     {
         var user = await _userManager.FindByNameAsync(userName);
+        if (user == null)
+        {
+            throw new UserException("User is not found");
+        }
+
         var result = await GetUserDtoAsync(user);
         return _mapper.Map<UserDto>(result);
     }
-    
+
     private async Task<IList<User>> SearchUsersAsync(string? searchString, bool showInactiveUsers)
     {
         var users = new List<User>();
@@ -76,13 +87,14 @@ public class UserService : IUserService
 
         return users;
     }
-    
+
     private async Task<UserDto> GetUserDtoAsync(User user)
     {
         var userDto = _mapper.Map<UserDto>(user);
         userDto.Roles = await _userManager.GetRolesAsync(user);
         return userDto;
     }
+
     private async Task<IList<UserDto>> GetUserDtosAsync(List<User> users)
     {
         var result = new List<UserDto>();

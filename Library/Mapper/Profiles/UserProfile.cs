@@ -10,5 +10,4 @@ public class UserProfile : Profile
     {
         CreateMap<User, UserDto>();
     }
-
 }

@@ -39,7 +39,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("user")]
-    public async Task<IActionResult> GetUserAsyunc(string userName)
+    public async Task<IActionResult> GetUserAsync(string userName)
     {
         var result = await _userService.GetUserAsync(userName);
         return Ok(result);
