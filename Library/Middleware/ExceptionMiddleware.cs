@@ -26,7 +26,7 @@ public class ExceptionMiddleware
         }
     }
 
-    private  Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = HttpStatusCode.InternalServerError;
         var result = string.Empty;
@@ -50,7 +50,7 @@ public class ExceptionMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;
 
-        if (result==string.Empty)
+        if (result == string.Empty)
         {
             result = JsonSerializer.Serialize(new { error = exception.Message });
         }
@@ -58,9 +58,10 @@ public class ExceptionMiddleware
         return context.Response.WriteAsync(result);
     }
 }
+
 public static class MiddlewareExceptions
 {
-    public static IApplicationBuilder UseException( this IApplicationBuilder app)
+    public static IApplicationBuilder UseException(this IApplicationBuilder app)
     {
         return app.UseMiddleware<ExceptionMiddleware>();
     }
