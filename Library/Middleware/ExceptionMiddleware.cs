@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
+using Library.Exceptions;
 
 namespace Library.Middleware;
 
@@ -35,6 +36,14 @@ public class ExceptionMiddleware
             case ValidationException validationException:
                 code = HttpStatusCode.BadRequest;
                 result = JsonSerializer.Serialize(validationException.InnerException);
+                break;
+            case AuthException authException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonSerializer.Serialize(authException.Message);
+                break;
+            case UserException userException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonSerializer.Serialize(userException.Message);
                 break;
         }
 
