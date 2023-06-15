@@ -1,12 +1,11 @@
 ﻿namespace Library.Models;
 
-public class BookDto
+public class AddBookModel
 {
-    public int  Id { get; set; }
+    public string NameBook { get; set; } = string.Empty;
 
     public string Author { get; set; } = string.Empty;
 
     public string? Description { get; set; }
 
-    public int Likes { get; set; }
 }
