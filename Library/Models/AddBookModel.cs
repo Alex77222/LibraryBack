@@ -2,7 +2,7 @@
 
 public class AddBookModel
 {
-    public string NameBook { get; set; } = string.Empty;
+    public string BookName { get; set; } = string.Empty;
 
     public string Author { get; set; } = string.Empty;
 
