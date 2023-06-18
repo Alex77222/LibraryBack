@@ -1,5 +1,4 @@
-﻿using Library.Data.Entities;
-using Library.Models;
+﻿using Library.Models;
 
 namespace Library.Services.Contracts;
 
@@ -12,7 +11,7 @@ public interface IBookService
 
     public Task<BookDto> GetBookAsync(int id);
 
-    public Task<BookDto> AddBookAsync(BookDto book);
+    public Task<BookDto> AddBookAsync(AddBookModel book);
 
     public Task<BookDto> UpdateBookAsync(UpdateBookModel model);
 }
