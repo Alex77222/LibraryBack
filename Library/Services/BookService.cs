@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Library.Data;
 using Library.Data.Entities;
+using Library.Exceptions;
 using Library.Models;
 using Library.Services.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services;
 
@@ -22,16 +24,18 @@ public class BookService : IBookService
         throw new NotImplementedException();
     }
 
-    public Task<BookDto> GetBookAsync(int id)
+    public async Task<BookDto> GetBookAsync(int id)
     {
-        throw new NotImplementedException();
+        var book = await _app.Book.FirstOrDefaultAsync(x => x.Id == id);
+        if (book == null) throw new BookException("Book is bot found!");
+        return _mapper.Map<BookDto>(book);
     }
 
     public async Task<BookDto> AddBookAsync(AddBookModel model)
     {
-        if (!_app.Book.Any(x=>x.BookName == model.BookName))
+        if (_app.Book.Any(x=>x.BookName == model.BookName))
         {
-            throw new Exception();
+            throw new BookException("This book is already!");
         }
 
         var book = new Book()
