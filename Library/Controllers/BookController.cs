@@ -31,9 +31,16 @@ public class BookController : ControllerBase
     }
 
     [HttpPut]
-    [Route("")]
+    [Route("updateBook")]
     public async Task<IActionResult> UpdateBookAsync(UpdateBookModel model)
     {
         return Ok(await _bookService.UpdateBookAsync(model));
+    }
+
+    [HttpDelete]
+    [Route("deleteBook")]
+    public async Task<IActionResult> DeleteBookAsync(int id)
+    {
+        return Ok(await _bookService.DeleteBookAsync(id));
     }
 }

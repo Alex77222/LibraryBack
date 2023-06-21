@@ -14,4 +14,6 @@ public interface IBookService
     public Task<BookDto> AddBookAsync(AddBookModel book);
 
     public Task<BookDto> UpdateBookAsync(UpdateBookModel model);
+
+    public Task<string> DeleteBookAsync(int id);
 }

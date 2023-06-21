@@ -33,7 +33,7 @@ public class BookService : IBookService
 
     public async Task<BookDto> AddBookAsync(AddBookModel model)
     {
-        if (_app.Book.Any(x=>x.BookName == model.BookName))
+        if (_app.Book.Any(x => x.BookName == model.BookName))
         {
             throw new BookException("This book is already!");
         }
@@ -48,7 +48,6 @@ public class BookService : IBookService
         await _app.Book.AddAsync(book);
         await _app.SaveChangesAsync();
         return _mapper.Map<BookDto>(book);
-
     }
 
     public async Task<BookDto> UpdateBookAsync(UpdateBookModel model)
@@ -59,16 +58,29 @@ public class BookService : IBookService
         {
             book.Description = model.Description;
         }
+
         if (!string.IsNullOrEmpty(model.Author))
         {
             book.Author = model.Author;
         }
+
         if (!string.IsNullOrEmpty(model.Description))
         {
             book.BookName = model.NameBook;
         }
+
         _app.Book.Update(book);
         await _app.SaveChangesAsync();
         return _mapper.Map<BookDto>(book);
+    }
+
+    public async Task<string> DeleteBookAsync(int id)
+    {
+        var book = await _app.Book.FirstOrDefaultAsync(x=>x.Id==id);
+        if (book == null) throw new BookException("Book is not found");
+         _app.Book.Remove(book);
+         await _app.SaveChangesAsync();
+
+         return "Book remove";
     }
 }
