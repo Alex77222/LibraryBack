@@ -29,4 +29,11 @@ public class BookController : ControllerBase
         var result = await _bookService.GetBookAsync(id);
         return Ok(result);
     }
+
+    [HttpPut]
+    [Route("")]
+    public async Task<IActionResult> UpdateBookAsync(UpdateBookModel model)
+    {
+        return Ok(await _bookService.UpdateBookAsync(model));
+    }
 }

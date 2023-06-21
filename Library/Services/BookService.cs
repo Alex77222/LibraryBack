@@ -51,8 +51,24 @@ public class BookService : IBookService
 
     }
 
-    public Task<BookDto> UpdateBookAsync(UpdateBookModel model)
+    public async Task<BookDto> UpdateBookAsync(UpdateBookModel model)
     {
-        throw new NotImplementedException();
+        var book = await _app.Book.FirstOrDefaultAsync(x => x.Id == model.Id);
+        if (book == null) throw new BookException("Book is not found");
+        if (!string.IsNullOrEmpty(model.Description))
+        {
+            book.Description = model.Description;
+        }
+        if (!string.IsNullOrEmpty(model.Author))
+        {
+            book.Author = model.Author;
+        }
+        if (!string.IsNullOrEmpty(model.Description))
+        {
+            book.BookName = model.NameBook;
+        }
+        _app.Book.Update(book);
+        await _app.SaveChangesAsync();
+        return _mapper.Map<BookDto>(book);
     }
 }
