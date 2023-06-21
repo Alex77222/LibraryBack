@@ -2,7 +2,8 @@
 
 public class BookException : Exception
 {
-    public BookException(string message) : base(message)
+    public BookException(string message ="Book is not found") : base(message)
+    
     {
     }
 }

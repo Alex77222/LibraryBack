@@ -27,7 +27,7 @@ public class BookService : IBookService
     public async Task<BookDto> GetBookAsync(int id)
     {
         var book = await _app.Book.FirstOrDefaultAsync(x => x.Id == id);
-        if (book == null) throw new BookException("Book is bot found!");
+        if (book == null) throw new BookException();
         return _mapper.Map<BookDto>(book);
     }
 
@@ -53,7 +53,7 @@ public class BookService : IBookService
     public async Task<BookDto> UpdateBookAsync(UpdateBookModel model)
     {
         var book = await _app.Book.FirstOrDefaultAsync(x => x.Id == model.Id);
-        if (book == null) throw new BookException("Book is not found");
+        if (book == null) throw new BookException();
         if (!string.IsNullOrEmpty(model.Description))
         {
             book.Description = model.Description;
@@ -77,7 +77,7 @@ public class BookService : IBookService
     public async Task<string> DeleteBookAsync(int id)
     {
         var book = await _app.Book.FirstOrDefaultAsync(x=>x.Id==id);
-        if (book == null) throw new BookException("Book is not found");
+        if (book == null) throw new BookException();
          _app.Book.Remove(book);
          await _app.SaveChangesAsync();
 
