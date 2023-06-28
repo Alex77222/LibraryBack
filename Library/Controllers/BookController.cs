@@ -22,6 +22,14 @@ public class BookController : ControllerBase
         var result = await _bookService.AddBookAsync(model);
         return Ok(result);
     }
+
+    [HttpGet]
+    [Route("getBooks")]
+    public async Task<IActionResult> GetBooksAsync(string? searchString, int? currentPage = 1, int? pageSize = 10)
+    {
+        return Ok(await _bookService.GetBooksAsync(searchString,currentPage!.Value,pageSize!.Value));
+    }
+
     [HttpGet]
     [Route("getBook")]
     public async Task<IActionResult> GetBookAsync(int id)

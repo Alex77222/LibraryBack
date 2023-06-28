@@ -19,9 +19,17 @@ public class BookService : IBookService
         _mapper = mapper;
     }
 
-    public Task<List<BookDto>> GetBooksAsync(string? searchString, int currentPage, int pageSize)
+    public async Task<Page<BookDto>> GetBooksAsync(string? searchString, int currentPage, int pageSize)
     {
-        throw new NotImplementedException();
+        var books = await SearchBookAsync(searchString);
+
+        return new Page<BookDto>()
+        {
+            CurrentPage = currentPage,
+            PageSize = pageSize,
+            TotalItems = books.Count,
+            Content = books.Skip((currentPage-1)*pageSize).Take(pageSize).ToList()
+        };
     }
 
     public async Task<BookDto> GetBookAsync(int id)
@@ -82,5 +90,20 @@ public class BookService : IBookService
          await _app.SaveChangesAsync();
 
          return "Book remove";
+    }
+
+    private async Task<List<BookDto>> SearchBookAsync(string? searchString)
+    {
+        var books = new List<Book>();
+
+        var search = !string.IsNullOrEmpty(searchString) ? searchString.Replace(" ", "") : string.Empty;
+
+        var booksByName = await _app.Book.Where(x => x.BookName != null && x.BookName.Contains(search)).ToListAsync();
+        books.AddRange(booksByName);
+
+        var booksByAuthor = await _app.Book.Where(x => x.Author.Contains(search)).ToListAsync();
+        books.AddRange(booksByAuthor.Except(booksByName));
+
+        return _mapper.Map<List<BookDto>>(books);
     }
 }

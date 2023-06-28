@@ -4,7 +4,7 @@ namespace Library.Services.Contracts;
 
 public interface IBookService
 {
-    public Task<List<BookDto>> GetBooksAsync(
+    public Task<Page<BookDto>> GetBooksAsync(
         string? searchString,
         int currentPage,
         int pageSize);
