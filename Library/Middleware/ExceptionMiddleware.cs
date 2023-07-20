@@ -45,6 +45,10 @@ public class ExceptionMiddleware
                 code = HttpStatusCode.BadRequest;
                 result = JsonSerializer.Serialize(userException.Message);
                 break;
+            case BookException bookException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonSerializer.Serialize(bookException.Message);
+                break;
         }
 
         context.Response.ContentType = "application/json";

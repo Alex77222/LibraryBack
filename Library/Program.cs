@@ -19,6 +19,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 
 builder.Services.AddAutoMapper(typeof(Program));
