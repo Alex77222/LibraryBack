@@ -100,6 +100,7 @@ public class AuthService : IAuthService
         return new LoginResponse
         {
             Token = new JwtSecurityTokenHandler().WriteToken(token),
+            IsSuccess = true
         };
     }
 }
